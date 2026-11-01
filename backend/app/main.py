@@ -4,6 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.core.config import settings
 
+from app.db.database import Base
+from app.db.database import engine
+from app.db import models
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.API_VERSION
