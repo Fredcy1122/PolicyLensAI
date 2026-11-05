@@ -4,11 +4,9 @@ from app.agents.intents import Intent
 from app.services.rag_service import (
     answer_question
 )
+
 from app.core.logger import logger
 
-logger.info(
-    f"Intent selected: {intent}"
-)
 
 def execute_question(
     question: str
@@ -20,6 +18,10 @@ def execute_question(
         question
     )
 
+    logger.info(
+        f"Intent selected: {intent}"
+    )
+
     if intent == Intent.RETRIEVAL:
 
         result = answer_question(
@@ -29,6 +31,30 @@ def execute_question(
         result["intent"] = intent
 
         return result
+
+    if intent == Intent.SUMMARY:
+
+        return {
+            "intent": intent,
+            "message":
+                "Summary functionality active"
+        }
+
+    if intent == Intent.COMPARISON:
+
+        return {
+            "intent": intent,
+            "message":
+                "Comparison functionality active"
+        }
+
+    if intent == Intent.METADATA:
+
+        return {
+            "intent": intent,
+            "message":
+                "Metadata functionality active"
+        }
 
     return {
         "intent": intent,

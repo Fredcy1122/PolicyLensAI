@@ -1,23 +1,23 @@
-from app.agents.policy_agent import (
-    PolicyAgent
+# scripts/test_agent.py
+
+from app.agents.agent_executor import (
+    execute_question
 )
 
-agent = PolicyAgent()
-
 print(
-    agent.decide_tool(
-        "What is the Nigeria Customs Service Act?"
+    execute_question(
+        "Compare two policy documents"
     )
 )
 
 print(
-    agent.decide_tool(
-        "Compare these policies"
+    execute_question(
+        "Summarize this regulation"
     )
 )
 
 print(
-    agent.decide_tool(
-        "Give me a summary"
+    execute_question(
+        "What is the publication date?"
     )
 )

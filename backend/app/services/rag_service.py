@@ -1,5 +1,30 @@
 from app.rag.retriever import retrieve
-from app.services.llm_service import generate_response
+
+from app.services.llm_service import (
+    generate_response
+)
+
+from app.services.validation_service import (
+    validate_evidence
+)
+
+
+def calculate_confidence(
+    retrieval
+):
+
+    num_chunks = len(
+        retrieval["documents"][0]
+    )
+
+    if num_chunks >= 5:
+        return "HIGH"
+
+    if num_chunks >= 3:
+        return "MEDIUM"
+
+    return "LOW"
+
 
 SYSTEM_PROMPT = """
 You are PolicyLens AI.
@@ -27,24 +52,30 @@ def answer_question(question):
         top_k=5
     )
 
-    documents = retrieval["documents"][0]
-    metadata = retrieval["metadatas"][0]
-
-    # STEP 12 - Abstention
-    if not documents:
+    if not validate_evidence(
+        retrieval
+    ):
 
         return {
-            "answer": (
-                "Insufficient evidence found in the indexed documents."
-            ),
+            "answer":
+                "Insufficient evidence found in the indexed documents.",
             "abstained": True,
             "citations": []
         }
 
-    # STEP 11 - Citation-aware context
+    documents = retrieval["documents"][0]
+    metadata = retrieval["metadatas"][0]
+
+    confidence = calculate_confidence(
+        retrieval
+    )
+
     context_parts = []
 
-    for doc, meta in zip(documents, metadata):
+    for doc, meta in zip(
+        documents,
+        metadata
+    ):
 
         title = meta.get(
             "title",
@@ -66,7 +97,9 @@ TEXT:
 """
         )
 
-    evidence = "\n\n".join(context_parts)
+    evidence = "\n\n".join(
+        context_parts
+    )
 
     prompt = f"""
 QUESTION:
@@ -77,8 +110,8 @@ RETRIEVED EVIDENCE:
 
 {evidence}
 
-Answer the question and reference the source
-document and page number when applicable.
+Answer the question and reference the
+source document and page number when applicable.
 """
 
     answer = generate_response(
@@ -92,13 +125,17 @@ document and page number when applicable.
 
         citations.append(
             {
-                "title": meta.get("title"),
-                "page": meta.get("page")
+                "title":
+                    meta.get("title"),
+
+                "page":
+                    meta.get("page")
             }
         )
 
     return {
         "answer": answer,
-        "abstained": False,
-        "citations": citations
+        "confidence": confidence,
+        "citations": citations,
+        "abstained": False
     }

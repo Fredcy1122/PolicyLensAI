@@ -1,29 +1,13 @@
-from app.services.llm_service import (
-    generate_response
+from app.services.summary_service import (
+    summarize_document
 )
 
 
-def summarize_document(
-    content: str
+def generate_document_summary(
+    title,
+    content
 ):
-
-    prompt = f"""
-Summarize this policy document.
-
-CONTENT:
-
-{content}
-"""
-
-    return generate_response(
-        "You are a policy analyst.",
-        prompt
+    return summarize_document(
+        title,
+        content
     )
-
-if intent == Intent.SUMMARY:
-
-    return {
-        "intent": intent,
-        "message":
-            "Summary workflow coming next."
-    }

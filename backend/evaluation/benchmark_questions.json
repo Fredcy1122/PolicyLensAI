@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "question": "What is the Nigeria Customs Service Act?",
+    "expected_document": "Nigeria Customs Service Act 2023",
+    "should_abstain": false
+  },
+  {
+    "id": 2,
+    "question": "Who issued the Act?",
+    "expected_document": "Nigeria Customs Service Act 2023",
+    "should_abstain": false
+  },
+  {
+    "id": 3,
+    "question": "What is the tariff for importing a Tesla Model Y?",
+    "expected_document": null,
+    "should_abstain": true
+  }
+]

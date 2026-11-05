@@ -19,6 +19,9 @@ class PolicyAgent:
         if "compare" in question:
             return Intent.COMPARISON
 
+        if "difference" in question:
+            return Intent.COMPARISON
+
         if "effective date" in question:
             return Intent.METADATA
 
