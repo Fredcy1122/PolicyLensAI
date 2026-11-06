@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.db.database import Base
 from app.db.database import engine
 from app.db import models
+from app.db import memory_models
 
 Base.metadata.create_all(bind=engine)
 

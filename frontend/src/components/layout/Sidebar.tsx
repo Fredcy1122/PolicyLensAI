@@ -6,6 +6,7 @@ import {
   Scale,
   FileText,
   BarChart3,
+  Brain,
 } from "lucide-react";
 
 const menuItems = [
@@ -18,6 +19,11 @@ const menuItems = [
     name: "Assistant",
     path: "/assistant",
     icon: MessageSquare,
+  },
+  {
+    name: "Agent Center",
+    path: "/agents",
+    icon: Brain,
   },
   {
     name: "Documents",

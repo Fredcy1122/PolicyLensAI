@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 
 import MainLayout from "./components/layout/MainLayout";
-
+import AgentCenter from "./pages/AgentCenter";
 import Dashboard from "./pages/Dashboard";
 import Assistant from "./pages/Assistant";
 import Documents from "./pages/Documents";
@@ -26,6 +26,11 @@ function App() {
           <Route
             path="/assistant"
             element={<Assistant />}
+          />
+
+          <Route
+            path="/agents"
+            element={<AgentCenter />}
           />
 
           <Route

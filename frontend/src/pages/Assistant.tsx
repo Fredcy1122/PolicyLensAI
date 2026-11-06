@@ -42,10 +42,10 @@ export default function Assistant() {
         id: crypto.randomUUID(),
         role: "assistant",
         content: result.answer,
-        confidence:
-          result.confidence,
-        citations:
-          result.citations || [],
+        confidence: result.confidence,
+        citations: result.citations || [],
+        agents: result.agents || [],
+        routing: result.routing,
       };
 
       setMessages((prev) => [
@@ -90,6 +90,36 @@ export default function Assistant() {
             <div className="message-content">
               {msg.content}
             </div>
+
+            {msg.agents && (
+              <div className="citation-box">
+                <strong>
+                  Agents:
+                </strong>
+
+                {msg.agents.join(", ")}
+              </div>
+            )}
+
+            {msg.collaboration && (
+              <div className="citation-box">
+                ✅ Collaborative reasoning enabled
+              </div>
+            )}
+
+            {msg.routing && (
+              <div className="citation-box">
+                <strong>
+                  Matched Keywords:
+                </strong>
+
+                {" "}
+
+                {msg.routing.matched_keywords.join(
+                  ", "
+                )}
+              </div>
+            )}
 
             {msg.role ===
               "assistant" &&

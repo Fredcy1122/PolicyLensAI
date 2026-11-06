@@ -1,4 +1,6 @@
-from app.agents.intents import Intent
+from app.agents.intents import (
+    Intent
+)
 
 
 class PolicyAgent:
@@ -8,24 +10,68 @@ class PolicyAgent:
         question: str
     ) -> Intent:
 
-        question = question.lower()
+        q = question.lower()
 
-        if "summary" in question:
-            return Intent.SUMMARY
+        finance_keywords = [
+            "tax",
+            "vat",
+            "levy",
+            "tariff",
+            "duty",
+            "finance",
+            "withholding",
+            "cost",
+        ]
 
-        if "summarize" in question:
-            return Intent.SUMMARY
+        customs_keywords = [
+            "customs",
+            "import",
+            "export",
+            "cargo",
+            "clearance",
+            "declaration",
+            "port",
+        ]
 
-        if "compare" in question:
-            return Intent.COMPARISON
+        legal_keywords = [
+            "law",
+            "act",
+            "section",
+            "penalty",
+            "offence",
+            "regulation",
+        ]
 
-        if "difference" in question:
-            return Intent.COMPARISON
+        trade_keywords = [
+            "trade",
+            "agreement",
+            "facilitation",
+            "commerce",
+            "treaty",
+        ]
 
-        if "effective date" in question:
-            return Intent.METADATA
+        if any(
+            keyword in q
+            for keyword in finance_keywords
+        ):
+            return Intent.FINANCE
 
-        if "publication date" in question:
-            return Intent.METADATA
+        if any(
+            keyword in q
+            for keyword in customs_keywords
+        ):
+            return Intent.CUSTOMS
 
-        return Intent.RETRIEVAL
+        if any(
+            keyword in q
+            for keyword in legal_keywords
+        ):
+            return Intent.LEGAL
+
+        if any(
+            keyword in q
+            for keyword in trade_keywords
+        ):
+            return Intent.TRADE
+
+        return Intent.POLICY
