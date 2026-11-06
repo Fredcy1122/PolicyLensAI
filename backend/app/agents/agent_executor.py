@@ -61,7 +61,7 @@ def execute_question(
         item
         for item in rankings
         if item[1] > 0
-    ][:2]
+    ][:1]
 
     results = []
 
