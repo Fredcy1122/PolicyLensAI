@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from app.api.routes import chat
 from app.api.routes import health
 from app.api.routes import documents
+from app.api.routes import dashboard
 
 
 api_router = APIRouter()
@@ -21,4 +22,9 @@ api_router.include_router(
     chat.router,
     prefix="/api",
     tags=["Chat"]
+)
+api_router.include_router(
+    dashboard.router,
+    prefix="/api",
+    tags=["Dashboard"]
 )

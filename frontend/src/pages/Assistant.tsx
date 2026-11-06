@@ -1,106 +1,165 @@
 import { useState } from "react";
 import { askQuestion } from "../services/chatService";
+import type { ChatMessage } from "../types/chat";
 
 export default function Assistant() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [confidence, setConfidence] = useState("");
-  const [citations, setCitations] = useState<any[]>([]);
+  const [question, setQuestion] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [messages, setMessages] =
+    useState<ChatMessage[]>([]);
 
   const handleAsk = async () => {
-    if (!question) return;
+    if (!question.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: question,
+    };
+
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+    ]);
+
+    const currentQuestion = question;
+
+    setQuestion("");
 
     try {
       setLoading(true);
 
-      const result = await askQuestion(
-        question
-      );
+      const result =
+        await askQuestion(
+          currentQuestion
+        );
 
-      setAnswer(result.answer);
+      const aiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: result.answer,
+        confidence:
+          result.confidence,
+        citations:
+          result.citations || [],
+      };
 
-      setConfidence(
-        result.confidence || ""
-      );
-
-      setCitations(
-        result.citations || []
-      );
-    } catch (error) {
-      console.error(error);
-
-      setAnswer(
-        "Error communicating with PolicyLens backend."
-      );
+      setMessages((prev) => [
+        ...prev,
+        aiMessage,
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            "Unable to reach PolicyLenAI backend.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-        maxWidth: "1000px",
-        margin: "0 auto",
-      }}
-    >
-      <h1>PolicyLens AI</h1>
+    <div>
+      <div className="assistant-header">
+        <h1>
+          🇳🇬 PolicyLenAI Assistant
+        </h1>
 
-      <textarea
-        rows={5}
-        placeholder="Ask a policy or regulatory question..."
-        value={question}
-        onChange={(e) =>
-          setQuestion(e.target.value)
-        }
-        style={{
-          width: "100%",
-          padding: "1rem",
-        }}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleAsk}>
-        Ask Question
-      </button>
-
-      {loading && (
         <p>
-          Thinking...
+          Ask questions about policies,
+          regulations and customs
+          legislation.
         </p>
-      )}
+      </div>
 
-      {answer && (
-        <>
-          <h2>Answer</h2>
+      <div className="chat-container">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`message ${msg.role}`}
+          >
+            <div className="message-content">
+              {msg.content}
+            </div>
 
-          <p>{answer}</p>
-
-          <h3>Confidence</h3>
-
-          <p>{confidence}</p>
-
-          <h3>Citations</h3>
-
-          <ul>
-            {citations.map(
-              (citation, index) => (
-                <li key={index}>
-                  {citation.title}
+            {msg.role ===
+              "assistant" &&
+              msg.confidence && (
+                <div className="confidence-badge">
+                  Confidence:
                   {" "}
-                  (
-                  Page {citation.page}
-                  )
-                </li>
-              )
-            )}
-          </ul>
-        </>
-      )}
+                  {msg.confidence}
+                </div>
+              )}
+
+            {msg.role ===
+              "assistant" &&
+              msg.citations &&
+              msg.citations.length >
+                0 && (
+                <div className="citation-box">
+                  <strong>
+                    Sources:
+                  </strong>
+
+                  {msg.citations.map(
+                    (citation, index) => (
+                      <div
+                        key={index}
+                      >
+                        ✅
+                        {" "}
+                        {
+                          citation.title
+                        }
+                        {" "}
+                        (Page{" "}
+                        {
+                          citation.page
+                        }
+                        )
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+          </div>
+        ))}
+
+        {loading && (
+          <div className="thinking">
+            PolicyLenAI is thinking...
+          </div>
+        )}
+      </div>
+
+      <div className="chat-input">
+        <textarea
+          rows={4}
+          placeholder="Ask a policy question..."
+          value={question}
+          onChange={(e) =>
+            setQuestion(
+              e.target.value
+            )
+          }
+        />
+
+        <button
+          onClick={handleAsk}
+        >
+          Ask
+        </button>
+      </div>
     </div>
   );
 }
