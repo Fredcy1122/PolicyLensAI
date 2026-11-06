@@ -4,7 +4,7 @@ export const askQuestion = async (
   question: string
 ) => {
   const response = await api.post(
-    "/api/chat",
+    "/chat",
     {
       question,
     }
