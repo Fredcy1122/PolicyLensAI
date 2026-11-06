@@ -90,6 +90,28 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <div className="dashboard-card">
+        <h3>Quick Actions</h3>
+
+        <div className="quick-actions">
+          <button>
+            Upload Document
+          </button>
+
+          <button>
+            Ask Question
+          </button>
+
+          <button>
+            Compare Policies
+          </button>
+
+          <button>
+            Generate Summary
+          </button>
+        </div>
+      </div>
+
       <div className="dashboard-grid">
         <div className="dashboard-card">
           <h3>Knowledge Coverage</h3>

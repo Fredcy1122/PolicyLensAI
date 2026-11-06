@@ -10,7 +10,14 @@ export default function Documents() {
     useState(true);
   const [searchTerm, setSearchTerm] =
     useState("");
-
+  const filteredDocuments =
+    documents.filter((doc) =>
+      doc.title
+        .toLowerCase()
+        .includes(
+          searchTerm.toLowerCase()
+        )
+    );
   useEffect(() => {
     loadDocuments();
   }, []);
@@ -38,11 +45,21 @@ export default function Documents() {
 
       <br />
 
+      <input
+        type="text"
+        placeholder="Search documents..."
+        value={searchTerm}
+        onChange={(e) =>
+          setSearchTerm(e.target.value)
+        }
+  className="search-input"
+/>
+
       {loading ? (
         <p>Loading documents...</p>
       ) : (
         <div className="documents-grid">
-          {documents.map((doc) => (
+          {filteredDocuments.map((doc) => (
             <div
               key={doc.document_id}
               className="document-card"
@@ -58,7 +75,15 @@ export default function Documents() {
               <p>
                 Status:
                 {" "}
-                {doc.status}
+                <span
+                  className={`status-badge ${
+                    doc.status === "READY"
+                      ? "success"
+                      : "pending"
+                  }`}
+                >
+                  {doc.status}
+                </span>
               </p>
 
               <small>
