@@ -1,4 +1,31 @@
+import { useEffect, useState } from "react";
+
+import { getAgentMetrics } from "../services/agentService";
+
+import type { AgentMetrics } from "../types/agentMetrics";
+
 export default function AgentCenter() {
+  const [metrics, setMetrics] =
+    useState<AgentMetrics | null>(
+      null
+    );
+
+  useEffect(() => {
+    loadMetrics();
+  }, []);
+
+  const loadMetrics =
+    async () => {
+      try {
+        const data =
+          await getAgentMetrics();
+
+        setMetrics(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
   return (
     <div>
       <h1>
@@ -10,49 +37,93 @@ export default function AgentCenter() {
         contributions.
       </p>
 
+      <div className="metrics-grid">
+
+        <div className="metric-card">
+          <h3>Total Questions</h3>
+
+          <h2>
+            {metrics?.total_questions ?? 0}
+          </h2>
+        </div>
+
+        <div className="metric-card">
+          <h3>Finance Agent</h3>
+
+          <h2>
+            {metrics?.finance ?? 0}
+          </h2>
+        </div>
+
+        <div className="metric-card">
+          <h3>Customs Agent</h3>
+
+          <h2>
+            {metrics?.customs ?? 0}
+          </h2>
+        </div>
+
+        <div className="metric-card">
+          <h3>Legal Agent</h3>
+
+          <h2>
+            {metrics?.legal ?? 0}
+          </h2>
+        </div>
+
+      </div>
+
       <div className="dashboard-grid">
+
         <div className="dashboard-card">
-            <h3>
-                Agent Capabilities
-            </h3>
 
-            <ul>
-                <li>
-                    ⚖️ Legal Agent
-                    (Acts, Sections,
-                    Penalties)
-                </li>
+          <h3>
+            Agent Capabilities
+          </h3>
 
-                <li>
-                    🚢 Customs Agent
-                    (Imports, Exports,
-                    Clearance)
-                </li>
+          <ul>
 
-                <li>
-                    🌍 Trade Agent
-                    (Trade Agreements,
-                    Policy Analysis)
-                </li>
+            <li>
+              ⚖️ Legal Agent
+              (Acts, Sections,
+              Penalties)
+            </li>
 
-                <li>
-                    💰 Finance Agent
-                    (VAT, Tariffs,
-                    Duties)
-                </li>
+            <li>
+              🚢 Customs Agent
+              (Imports, Exports,
+              Clearance)
+            </li>
 
-                <li>
-                    📘 Policy Agent
-                    (General Knowledge)
-                </li>
-            </ul>
+            <li>
+              🌍 Trade Agent
+              (Trade Agreements,
+              Policy Analysis)
+            </li>
+
+            <li>
+              💰 Finance Agent
+              (VAT, Tariffs,
+              Duties)
+            </li>
+
+            <li>
+              📘 Policy Agent
+              (General Knowledge)
+            </li>
+
+          </ul>
+
         </div>
 
         <div className="dashboard-card">
-          <h3>Agent Architecture</h3>
+
+          <h3>
+            Agent Architecture
+          </h3>
 
           <pre>
-Question
+{`Question
 ↓
 Router Agent
 ↓
@@ -61,17 +132,23 @@ Customs Agent
 Trade Agent
 Finance Agent
 ↓
-Synthesis Agent
+Reasoning Agent
 ↓
-Final Answer
+Final Answer`}
           </pre>
+
         </div>
+
       </div>
 
       <div className="dashboard-card">
-        <h3>Current Capabilities</h3>
+
+        <h3>
+          Current Capabilities
+        </h3>
 
         <ul>
+
           <li>
             ✅ Multi-Agent Routing
           </li>
@@ -97,10 +174,17 @@ Final Answer
           </li>
 
           <li>
-            ✅ Synthesis Layer
+            ✅ Persistent Memory
           </li>
+
+          <li>
+            ✅ Reasoning Layer
+          </li>
+
         </ul>
+
       </div>
+
     </div>
   );
 }

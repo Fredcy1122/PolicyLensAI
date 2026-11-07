@@ -3,6 +3,9 @@ from app.core.logger import logger
 from app.agents.router_agent import (
     RouterAgent
 )
+from app.agents.reasoning_agent import (
+    ReasoningAgent
+)
 from app.agents.persistent_memory import (
     PersistentMemory
 )
@@ -98,7 +101,7 @@ def execute_question(
             shared_context
         )
 
-        result = agent.run(
+        result = agent.analyze(
             question
         )
 
@@ -124,27 +127,17 @@ def execute_question(
 
         return result
 
-    synthesis = (
-        SynthesisAgent()
+    reasoner = (
+        ReasoningAgent()
     )
 
     combined = (
-        synthesis.combine(
+        reasoner.execute(
+            question,
             results
         )
     )
-    memory.add(
-        question,
-        combined["answer"],
-        ",".join(
-            combined.get(
-                "agents",
-                []
-            )
-        )
-    )
 
-    
     combined["agents"] = [
         str(intent.value)
         for intent, score
@@ -152,21 +145,18 @@ def execute_question(
     ]
 
     combined["routing"] = {
-        "matched_keywords": matches,
+        "matched_keywords":
+            matches,
         "selected_agents":
             combined["agents"]
     }
 
-    combined["confidence"] = (
-        max(
-            [
-                score
-                for intent, score
-                in selected
-            ],
-            default=0
+    memory.add(
+        question,
+        combined["answer"],
+        ",".join(
+            combined["agents"]
         )
-        * 10
     )
 
     return combined

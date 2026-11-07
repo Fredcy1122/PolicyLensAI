@@ -7,6 +7,7 @@ from app.api.routes import summary
 from app.api.routes import comparison
 from app.api.routes import evaluation
 from app.api.routes import memory
+from app.api.routes import agents
 
 api_router = APIRouter()
 
@@ -50,4 +51,9 @@ api_router.include_router(
     memory.router,
     prefix="/api",
     tags=["Memory"]
+)
+api_router.include_router(
+    agents.router,
+    prefix="/api",
+    tags=["Agents"]
 )

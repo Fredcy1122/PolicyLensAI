@@ -1,20 +1,16 @@
-from app.agents.base_agent import (
-    BaseAgent
+from app.agents.agent_notes import (
+    AgentNotes
 )
 
 
-class TradeAgent(BaseAgent):
+class TradeAgent:
 
-    SYSTEM_CONTEXT = """
-You are an international trade expert.
-
-Prioritize:
-
-- Trade facilitation
-- Trade agreements
-- Commerce regulations
-- Regional integration
-- Trade policy implications
-
-Provide trade-focused analysis.
-"""
+    def analyze(
+        self,
+        question: str
+    ):
+        return {
+            "agent": "Trade Agent",
+            "focus":
+                AgentNotes.trade()
+        }

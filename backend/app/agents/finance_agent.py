@@ -1,22 +1,16 @@
-from app.agents.base_agent import (
-    BaseAgent
+from app.agents.agent_notes import (
+    AgentNotes
 )
 
 
-class FinanceAgent(BaseAgent):
+class FinanceAgent:
 
-    SYSTEM_CONTEXT = """
-You are a finance and taxation expert.
-
-Prioritize:
-
-- VAT
-- Withholding Tax
-- Customs Duty
-- Levies
-- Tariffs
-- Financial impact
-- Compliance costs
-
-Provide financially focused analysis.
-"""
+    def analyze(
+        self,
+        question: str
+    ):
+        return {
+            "agent": "Finance Agent",
+            "focus":
+                AgentNotes.finance()
+        }
