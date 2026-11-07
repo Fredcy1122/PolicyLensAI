@@ -14,15 +14,29 @@ class ReasoningAgent:
 
         for item in analyses:
 
-            context.append(
-                f"""
-Agent:
-{item['agent']}
+            if "answer" in item:
 
-Focus:
-{item['focus']}
-"""
-            )
+                context.append(
+                    f"""
+            Agent:
+            {item['agent']}
+
+            Result:
+            {item['answer']}
+            """
+                )
+
+            else:
+
+                context.append(
+                    f"""
+            Agent:
+            {item['agent']}
+
+            Focus:
+            {item['focus']}
+            """
+                )
 
         enhanced_question = f"""
 Question:

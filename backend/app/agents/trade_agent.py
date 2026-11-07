@@ -1,7 +1,9 @@
 from app.agents.agent_notes import (
     AgentNotes
 )
-
+from app.tools.trade_impact import (
+    analyze_trade_impact
+)
 
 class TradeAgent:
 
@@ -9,8 +11,28 @@ class TradeAgent:
         self,
         question: str
     ):
-        return {
-            "agent": "Trade Agent",
-            "focus":
-                AgentNotes.trade()
-        }
+        if (
+            "impact" in question.lower()
+        ):
+            result = (
+                analyze_trade_impact(
+                    question
+                )
+            )
+
+            return {
+                "agent":
+                    "Trade Agent",
+                "tool_used":
+                    "Trade Impact",
+
+                "answer":
+                    str(result)
+            }
+    def policy_impact(
+        self,
+        policy_name: str
+    ):
+        return analyze_trade_impact(
+            policy_name
+        )

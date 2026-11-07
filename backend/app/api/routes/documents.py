@@ -1,4 +1,17 @@
-from fastapi import APIRouter, Depends
+from fastapi import (
+    APIRouter,
+    Depends,
+    UploadFile,
+    File
+)
+from app.repositories.document_repository import (
+    DocumentRepository
+)
+from app.ingestion.ingestion_service import (
+    ingest_document
+)
+
+import os
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -26,3 +39,84 @@ def get_documents(
         }
         for doc in documents
     ]
+
+@router.post("/documents/upload")
+async def upload_document(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    upload_dir = "uploads"
+
+    os.makedirs(
+        upload_dir,
+        exist_ok=True
+    )
+
+    file_path = os.path.join(
+        upload_dir,
+        file.filename
+    )
+
+    with open(
+        file_path,
+        "wb"
+    ) as buffer:
+
+        buffer.write(
+            await file.read()
+        )
+
+    ingestion_result = (
+        ingest_document(
+            file_path
+        )
+    )
+
+    metadata = (
+        ingestion_result[
+            "metadata"
+        ]
+    )
+
+    document = repo.create(
+        db,
+        {
+            "document_id":
+                metadata.get(
+                    "document_id",
+                    file.filename
+                ),
+
+            "title":
+                metadata.get(
+                    "title",
+                    file.filename
+                ),
+
+            "category":
+                metadata.get(
+                    "category",
+                    "General"
+                ),
+
+            "issuing_authority":
+                metadata.get(
+                    "issuing_authority",
+                    "Unknown"
+                ),
+
+            "source_url":
+                "",
+
+            "status":
+                "READY"
+        }
+    )
+
+    return {
+        "message":
+            "Document uploaded successfully",
+
+        "document_id":
+            document.document_id
+    }
