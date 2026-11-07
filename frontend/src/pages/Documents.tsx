@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { getDocuments, uploadDocument } from "../services/documentService";
+import { useNavigate } from "react-router-dom";
+
+import {
+  getDocuments,
+  uploadDocument,
+} from "../services/documentService";
+
 import type { Document } from "../types/document";
 
 export default function Documents() {
@@ -8,46 +14,18 @@ export default function Documents() {
 
   const [loading, setLoading] =
     useState(true);
+
   const [selectedFile, setSelectedFile] =
-    useState<File | null>(
-      null
-    );
+    useState<File | null>(null);
+
   const [searchTerm, setSearchTerm] =
     useState("");
-  const filteredDocuments =
-    documents.filter((doc) =>
-      doc.title
-        .toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
-    );
+
+  const navigate =
+    useNavigate();
+
   useEffect(() => {
     loadDocuments();
-    const handleUpload =
-      async () => {
-
-        if (!selectedFile)
-          return;
-
-        try {
-
-          await uploadDocument(
-            selectedFile
-          );
-
-          loadDocuments();
-
-          setSelectedFile(
-            null
-          );
-
-        } catch (error) {
-
-          console.error(error);
-
-        }
-      };
   }, []);
 
   const loadDocuments = async () => {
@@ -63,9 +41,41 @@ export default function Documents() {
     }
   };
 
+  const handleUpload =
+    async () => {
+      if (!selectedFile) {
+        return;
+      }
+
+      try {
+        await uploadDocument(
+          selectedFile
+        );
+
+        await loadDocuments();
+
+        setSelectedFile(
+          null
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+  const filteredDocuments =
+    documents.filter((doc) =>
+      doc.title
+        .toLowerCase()
+        .includes(
+          searchTerm.toLowerCase()
+        )
+    );
+
   return (
     <div>
-      <h1>📚 Document Library</h1>
+      <h1>
+        📚 Document Library
+      </h1>
 
       <p>
         Browse ingested policies and regulations.
@@ -77,86 +87,128 @@ export default function Documents() {
           marginBottom: "20px",
         }}
       >
-
         <input
           type="file"
           accept=".pdf"
           onChange={(e) => {
-
             const file =
               e.target.files?.[0];
 
             if (file) {
-              setSelectedFile(
-                file
-              );
+              setSelectedFile(file);
             }
-
           }}
         />
 
         <button
-          onClick={
-            handleUpload
-          }
+          onClick={handleUpload}
           className="summary-button"
           style={{
-            marginLeft: "10px"
+            marginLeft: "10px",
           }}
         >
           Upload Document
         </button>
-
       </div>
-
-      <br />
 
       <input
         type="text"
         placeholder="Search documents..."
         value={searchTerm}
         onChange={(e) =>
-          setSearchTerm(e.target.value)
+          setSearchTerm(
+            e.target.value
+          )
         }
-  className="search-input"
-/>
+        className="search-input"
+      />
+
+      <br />
+      <br />
 
       {loading ? (
-        <p>Loading documents...</p>
+        <p>
+          Loading documents...
+        </p>
       ) : (
         <div className="documents-grid">
-          {filteredDocuments.map((doc) => (
-            <div
-              key={doc.document_id}
-              className="document-card"
-            >
-              <h3>{doc.title}</h3>
+          {filteredDocuments.map(
+            (doc) => (
+              <div
+                key={doc.document_id}
+                className="document-card"
+              >
+                <h3>
+                  {doc.title}
+                </h3>
 
-              <p>
-                Category:
-                {" "}
-                {doc.category}
-              </p>
+                <p>
+                  Category: {doc.category}
+                </p>
 
-              <p>
-                Status:
-                {" "}
-                <span
-                  className={`status-badge ${
-                    doc.status === "READY"
-                      ? "success"
-                      : "pending"
-                  }`}
+                <p>
+                  Status{" "}
+                  <span
+                    className={`status-badge ${
+                      doc.status ===
+                      "READY"
+                        ? "success"
+                        : "pending"
+                    }`}
+                  >
+                    {doc.status}
+                  </span>
+                </p>
+
+                <small>
+                  {doc.document_id}
+                </small>
+
+                <div
+                  style={{
+                    marginTop:
+                      "10px",
+                    display:
+                      "flex",
+                    gap: "10px",
+                  }}
                 >
-                  {doc.status}
-                </span>
-              </p>
+                  <button
+                    className="summary-button"
+                    onClick={() =>
+                      navigate(
+                        `/summary/${doc.document_id}`
+                      )
+                    }
+                  >
+                    Summary
+                  </button>
 
-              <small>
-                {doc.document_id}
-              </small>
-            </div>
-          ))}
+                  <button
+                    className="summary-button"
+                    onClick={() =>
+                      navigate(
+                        "/comparison"
+                      )
+                    }
+                  >
+                    Compare
+                  </button>
+
+                  <button
+                    className="summary-button"
+                    onClick={() =>
+                      navigate(
+                        `/analysis/${doc.document_id}`
+                      )
+                    }
+                  >
+                    Analyze
+                  </button>
+                </div>
+              </div>
+            )
+          )}
         </div>
       )}
     </div>

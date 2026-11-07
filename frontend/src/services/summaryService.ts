@@ -16,3 +16,16 @@ export const generateSummary =
 
     return response.data;
   };
+
+export const generateDocumentSummary =
+  async (
+    documentId: string
+  ) => {
+
+    const response =
+      await api.get(
+        `/summary/document/${documentId}`
+      );
+
+    return response.data;
+  };

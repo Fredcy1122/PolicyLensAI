@@ -1,12 +1,16 @@
-import { useState } from "react";
-import { generateSummary } from "../services/summaryService";
+import { useEffect, useState } from "react";
+
+import { useParams } from "react-router-dom";
+import ReactMarkdown
+from "react-markdown";
+import {
+  generateDocumentSummary,
+} from "../services/summaryService";
 
 export default function Summary() {
-  const [title, setTitle] =
-    useState("");
 
-  const [content, setContent] =
-    useState("");
+  const { documentId } =
+    useParams();
 
   const [summary, setSummary] =
     useState("");
@@ -14,63 +18,63 @@ export default function Summary() {
   const [loading, setLoading] =
     useState(false);
 
-  const handleGenerate =
+  useEffect(() => {
+
+    if (documentId) {
+      generateSummary();
+    }
+
+  }, [documentId]);
+
+  const generateSummary =
     async () => {
+
+      if (!documentId) {
+        return;
+      }
+
       try {
+
         setLoading(true);
 
         const result =
-          await generateSummary(
-            title,
-            content
+          await generateDocumentSummary(
+            documentId
           );
 
         setSummary(
           result.summary
         );
+
       } catch (error) {
+
         console.error(error);
+
       } finally {
+
         setLoading(false);
+
       }
     };
 
   return (
     <div>
+
       <h1>
-        📝 Policy Summary
+        📝 Document Summary
       </h1>
 
-      <input
-        type="text"
-        placeholder="Document Title"
-        value={title}
-        onChange={(e) =>
-          setTitle(
-            e.target.value
-          )
-        }
-        className="search-input"
-      />
+      <p>
+        Document ID:
+        {" "}
+        {documentId}
+      </p>
 
-      <textarea
-        rows={10}
-        placeholder="Paste document content..."
-        value={content}
-        onChange={(e) =>
-          setContent(
-            e.target.value
-          )
-        }
-        className="summary-textarea"
-      />
-
-      <br />
       <br />
 
       <button
         onClick={
-          handleGenerate
+          generateSummary
         }
         className="summary-button"
       >
@@ -85,11 +89,18 @@ export default function Summary() {
 
       {summary && (
         <div className="summary-result">
-          <h2>Summary</h2>
 
-          <p>{summary}</p>
+          <h2>
+            Summary
+          </h2>
+
+          <ReactMarkdown>
+            {summary}
+          </ReactMarkdown>
+
         </div>
       )}
+
     </div>
   );
 }

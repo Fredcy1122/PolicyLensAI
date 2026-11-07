@@ -14,21 +14,29 @@ class TradeAgent:
         if (
             "impact" in question.lower()
         ):
-            result = (
-                analyze_trade_impact(
-                    question
-                )
+
+            result = analyze_trade_impact(
+                question
             )
 
             return {
                 "agent":
                     "Trade Agent",
+
                 "tool_used":
                     "Trade Impact",
 
                 "answer":
                     str(result)
             }
+
+        return {
+            "agent":
+                "Trade Agent",
+
+                "focus":
+                    AgentNotes.trade()
+        }
     def policy_impact(
         self,
         policy_name: str

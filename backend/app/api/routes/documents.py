@@ -10,6 +10,16 @@ from app.repositories.document_repository import (
 from app.ingestion.ingestion_service import (
     ingest_document
 )
+from app.services.document_analysis_service import (
+    analyze_document
+)
+from app.rag.document_chunker import (
+    chunk_document
+)
+
+from app.rag.vector_store import (
+    add_chunks
+)
 
 import os
 from sqlalchemy.orm import Session
@@ -39,6 +49,34 @@ def get_documents(
         }
         for doc in documents
     ]
+
+@router.get(
+    "/documents/analyze/{document_id}"
+)
+def analyze(
+    document_id: str
+):
+    try:
+
+        analysis = (
+            analyze_document(
+                document_id
+            )
+        )
+
+        return {
+            "analysis":
+                analysis
+        }
+
+    except Exception as e:
+
+        return {
+            "analysis":
+                "Document analysis is temporarily unavailable due to Azure OpenAI rate limits. Please try again later.",
+            "error":
+                str(e)
+        }
 
 @router.post("/documents/upload")
 async def upload_document(
@@ -77,21 +115,32 @@ async def upload_document(
             "metadata"
         ]
     )
+    document_id = metadata.get(
+        "document_id",
+        file.filename
+    )
+
+    title = metadata.get(
+        "title",
+        file.filename
+    )
+
+    chunks = chunk_document(
+        document_id=document_id,
+        title=title,
+        pages=ingestion_result["pages"]
+    )
+
+    add_chunks(chunks)
 
     document = repo.create(
         db,
         {
             "document_id":
-                metadata.get(
-                    "document_id",
-                    file.filename
-                ),
+                document_id,
 
             "title":
-                metadata.get(
-                    "title",
-                    file.filename
-                ),
+                title,
 
             "category":
                 metadata.get(

@@ -14,6 +14,9 @@ class ReasoningAgent:
 
         for item in analyses:
 
+            if item is None:
+                continue
+
             if "answer" in item:
 
                 context.append(

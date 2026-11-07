@@ -12,6 +12,8 @@ import Documents from "./pages/Documents";
 import Comparison from "./pages/Comparison";
 import Summary from "./pages/Summary";
 import Evaluation from "./pages/Evaluation";
+import DocumentAnalysis
+from "./pages/DocumentAnalysis";
 
 function App() {
   return (
@@ -36,6 +38,17 @@ function App() {
           <Route
             path="/documents"
             element={<Documents />}
+          />
+
+          <Route
+            path="/summary/:documentId"
+            element={<Summary />}
+          />
+          <Route
+            path="/analysis/:documentId"
+            element={
+              <DocumentAnalysis />
+            }
           />
 
           <Route

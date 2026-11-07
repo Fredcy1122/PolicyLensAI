@@ -33,6 +33,14 @@ class CustomsAgent:
                         result["requirements"]
                     )
             }
+
+        return {
+            "agent":
+                "Customs Agent",
+
+            "focus":
+                AgentNotes.customs()
+        }
         
     def checklist(
         self,

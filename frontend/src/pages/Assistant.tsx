@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { askQuestion } from "../services/chatService";
 import type { ChatMessage } from "../types/chat";
+import ReactMarkdown
+from "react-markdown";
 
 export default function Assistant() {
   const [question, setQuestion] =
@@ -88,7 +90,9 @@ export default function Assistant() {
             className={`message ${msg.role}`}
           >
             <div className="message-content">
-              {msg.content}
+              <ReactMarkdown>
+                {msg.content}
+              </ReactMarkdown>
             </div>
 
             {msg.agents && (

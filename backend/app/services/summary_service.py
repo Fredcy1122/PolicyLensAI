@@ -1,11 +1,12 @@
-from app.services.llm_service import generate_response
+from app.services.llm_service import (
+    generate_response
+)
 
 
 def summarize_document(
     document_title: str,
     content: str
 ):
-
     prompt = f"""
 Document Title:
 
@@ -15,21 +16,57 @@ Document Content:
 
 {content}
 
-Generate a structured policy summary.
+Create an executive policy briefing.
 
-Sections:
+Return the response in markdown format.
 
-1. Purpose
-2. Scope
-3. Key Provisions
-4. Responsibilities
-5. Enforcement Provisions
-6. Important Notes
+Structure exactly as:
 
-Use evidence only from the document.
+# Executive Summary
+
+Provide a concise overview of the document.
+
+# Key Objectives
+
+List the main goals of the document.
+
+# Key Provisions
+
+Summarize important provisions, obligations,
+requirements, rights, duties, or restrictions.
+
+# Compliance Requirements
+
+Highlight actions required for compliance.
+
+# Financial Implications
+
+Identify taxes, duties, fees, tariffs,
+penalties, costs, or financial impact.
+
+If none are stated, say so.
+
+# Operational Impact
+
+Describe impact on organizations,
+business operations, logistics,
+trade, customs, or government agencies.
+
+# Risks
+
+Identify compliance risks,
+regulatory risks, or legal risks.
+
+# Recommendations
+
+Provide practical recommendations
+for management.
+
+Use only evidence from the document.
+Do not invent information.
 """
 
     return generate_response(
-        "You are an expert policy analyst.",
+        "You are a senior policy, customs, trade, and regulatory analyst.",
         prompt,
     )

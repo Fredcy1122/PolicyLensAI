@@ -110,8 +110,32 @@ RETRIEVED EVIDENCE:
 
 {evidence}
 
-Answer the question and reference the
-source document and page number when applicable.
+Answer using markdown.
+
+Structure the response as:
+
+# Executive Summary
+
+Provide a concise answer.
+
+# Key Findings
+
+Summarize the most important findings.
+
+# Important Provisions
+
+List significant provisions or requirements.
+
+# Operational Impact
+
+Explain practical implications.
+
+# Sources
+
+List source documents and page references.
+
+Use only the evidence provided.
+Do not invent information.
 """
 
     answer = generate_response(

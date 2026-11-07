@@ -28,11 +28,21 @@ class LegalAgent:
             return {
                 "agent":
                     "Legal Agent",
+
                 "tool_used":
                     "Section Lookup",
+
                 "answer":
                     result["message"]
             }
+
+        return {
+            "agent":
+                "Legal Agent",
+
+            "focus":
+                AgentNotes.legal()
+        }
     def section_lookup(
         self,
         section_number: str

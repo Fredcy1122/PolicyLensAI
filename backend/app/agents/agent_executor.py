@@ -104,10 +104,10 @@ def execute_question(
         result = agent.analyze(
             question
         )
-
-        results.append(
-            result
-        )
+        if result:
+            results.append(
+                result
+            )
 
         shared_context = (
             collaboration

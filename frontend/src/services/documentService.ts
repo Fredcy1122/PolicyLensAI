@@ -33,3 +33,16 @@ export const uploadDocument =
 
     return response.data;
   };
+
+export const analyzeDocument =
+  async (
+    documentId: string
+  ) => {
+
+    const response =
+      await api.get(
+        `/documents/analyze/${documentId}`
+      );
+
+    return response.data;
+  };
