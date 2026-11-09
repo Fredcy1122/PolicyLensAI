@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_VERSION: str
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / "backend" / ".env"
+        extra="ignore"
     )
 
 
