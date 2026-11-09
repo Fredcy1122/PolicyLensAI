@@ -8,6 +8,8 @@ client = AzureOpenAI(
     azure_endpoint=settings.AZURE_OPENAI_ENDPOINT
 )
 
+print("=== LOADING OPENAI CLIENT ===")
+
 def generate_response(
     system_prompt,
     user_prompt
@@ -28,3 +30,5 @@ def generate_response(
     )
 
     return response.choices[0].message.content
+
+print("=== OPENAI CLIENT LOADED ===")
