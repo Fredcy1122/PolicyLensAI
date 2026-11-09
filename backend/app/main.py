@@ -11,6 +11,8 @@ from app.db import memory_models
 
 Base.metadata.create_all(bind=engine)
 
+print("=== POLICYLENS STARTING ===")
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.API_VERSION
@@ -26,6 +28,7 @@ app.add_middleware(
 
 app.include_router(api_router)
 
+print("=== POLICYLENS READY ===")
 
 @app.get("/")
 def root():
