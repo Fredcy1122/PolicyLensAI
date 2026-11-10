@@ -20,11 +20,15 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://policy-lens-ai-six.vercel.app",
+        "https://policy-lens-3oc25vbm2-fredrick6.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(api_router)
 
 print("=== POLICYLENS READY ===")
