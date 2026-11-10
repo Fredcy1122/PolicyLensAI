@@ -50,5 +50,4 @@ Do not invent information.
         "You are a senior regulatory intelligence analyst.",
         prompt
     )
-
     return analysis

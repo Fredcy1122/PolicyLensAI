@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { compareDocuments } from "../services/comparisonService";
+import { getDocuments } from "../services/documentService";
 
 export default function Comparison() {
   const [documentA, setDocumentA] =
@@ -8,6 +10,21 @@ export default function Comparison() {
   const [documentB, setDocumentB] =
     useState("");
 
+  const [documents, setDocuments] =
+    useState<any[]>([]);
+
+  useEffect(() => {
+    loadDocuments();
+  }, []);
+
+  const loadDocuments = async () => {
+    try {
+      const docs = await getDocuments();
+      setDocuments(docs);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const [result, setResult] =
     useState("");
 
@@ -16,6 +33,21 @@ export default function Comparison() {
 
   const handleCompare =
     async () => {
+
+      if (!documentA || !documentB) {
+        alert(
+          "Please select two documents."
+        );
+        return;
+      }
+
+      if (documentA === documentB) {
+        alert(
+          "Please select different documents."
+        );
+        return;
+      }
+
       try {
         setLoading(true);
 
@@ -38,35 +70,59 @@ export default function Comparison() {
   return (
     <div>
       <h1>
-        ⚖️ Policy Comparison
+        ⚖️ Regulatory Document Comparison
       </h1>
-
-      <textarea
-        rows={10}
-        className="summary-textarea"
-        placeholder="Paste first document..."
+      <p>
+        Compare policies, regulations,
+        customs guidelines and legal
+        documents stored in PolicyLenAI.
+      </p>
+      <select
         value={documentA}
         onChange={(e) =>
           setDocumentA(
             e.target.value
           )
         }
-      />
+      >
+        <option value="">
+          Select First Document
+        </option>
+
+        {documents.map((doc) => (
+          <option
+            key={doc.document_id}
+            value={doc.document_id}
+          >
+            {doc.title}
+          </option>
+        ))}
+      </select>
 
       <br />
       <br />
 
-      <textarea
-        rows={10}
-        className="summary-textarea"
-        placeholder="Paste second document..."
+      <select
         value={documentB}
         onChange={(e) =>
           setDocumentB(
             e.target.value
           )
         }
-      />
+      >
+        <option value="">
+          Select Second Document
+        </option>
+
+        {documents.map((doc) => (
+          <option
+            key={doc.document_id}
+            value={doc.document_id}
+          >
+            {doc.title}
+          </option>
+        ))}
+      </select>
 
       <br />
       <br />
@@ -82,7 +138,7 @@ export default function Comparison() {
 
       {loading && (
         <p>
-          Comparing...
+          🔍 Analyzing differences between documents...
         </p>
       )}
 
@@ -92,9 +148,9 @@ export default function Comparison() {
             Comparison Result
           </h2>
 
-          <pre>
+          <ReactMarkdown>
             {result}
-          </pre>
+          </ReactMarkdown>
         </div>
       )}
     </div>
