@@ -39,7 +39,7 @@ def summary_by_document(
             document_id
         )
     )
-    content = content[:12000]
+    content = content[:5000]
     try:
 
         summary = summarize_document(

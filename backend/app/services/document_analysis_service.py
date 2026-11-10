@@ -17,7 +17,7 @@ def analyze_document(
     )
 
     # Prevent token explosions
-    content = content[:12000]
+    content = content[:5000]
 
     prompt = f"""
 Create an executive regulatory assessment.

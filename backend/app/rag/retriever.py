@@ -1,14 +1,14 @@
 from app.rag.vector_store import (
-    collection
+    get_collection
 )
 
 
 def retrieve(
     query,
-    top_k=5
+    top_k=3
 ):
 
-    results = collection.query(
+    results = get_collection().query(
         query_texts=[query],
         n_results=top_k
     )

@@ -1,12 +1,21 @@
 import chromadb
 
-client = chromadb.PersistentClient(
-    path="./chroma_db"
-)
+_collection = None
 
-collection = client.get_or_create_collection(
-    name="policy_documents"
-)
+
+def get_collection():
+    global _collection
+
+    if _collection is None:
+        client = chromadb.PersistentClient(
+            path="./chroma_db"
+        )
+
+        _collection = client.get_or_create_collection(
+            name="policy_documents"
+        )
+
+    return _collection
 
 def add_chunks(chunks):
 

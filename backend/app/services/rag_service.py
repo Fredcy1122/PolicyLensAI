@@ -49,7 +49,7 @@ def answer_question(question):
 
     retrieval = retrieve(
         question,
-        top_k=5
+        top_k=3
     )
 
     if not validate_evidence(
@@ -99,7 +99,7 @@ TEXT:
 
     evidence = "\n\n".join(
         context_parts
-    )
+    )[:6000]
 
     prompt = f"""
 QUESTION:

@@ -1,12 +1,12 @@
 from app.rag.vector_store import (
-    collection
+    get_collection
 )
 
 
 def get_document_content(
     document_id: str
 ):
-    results = collection.get(
+    results = get_collection().get(
         where={
             "document_id":
                 document_id
