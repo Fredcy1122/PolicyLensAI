@@ -2,6 +2,18 @@ from app.rag.document_retriever import (
     get_document_content
 )
 
+from app.agents.classifier_agent import (
+    ClassifierAgent
+)
+
+from app.agents.document_router import (
+    select_agents
+)
+
+from app.agents.synthesis_agent import (
+    SynthesisAgent
+)
+
 from app.services.llm_service import (
     generate_response
 )
@@ -10,44 +22,73 @@ from app.services.llm_service import (
 def analyze_document(
     document_id: str
 ):
-    content = (
-        get_document_content(
-            document_id
+
+    content = get_document_content(
+        document_id
+    )
+
+    content = content[:5000]
+
+    classifier = ClassifierAgent()
+
+    document_type = classifier.classify(
+        content
+    )
+
+    selected_agents = (
+        select_agents(
+            document_type
         )
     )
 
-    # Prevent token explosions
-    content = content[:5000]
+    agent_results = []
 
-    prompt = f"""
-Create an executive regulatory assessment.
+    for agent in selected_agents:
 
-Document:
+        if hasattr(
+            agent,
+            "review_document"
+        ):
+            result = (
+                agent.review_document(
+                    content
+                )
+            )
 
-{content}
+            agent_results.append(
+                result
+            )
 
-Return markdown.
-
-# Executive Summary
-
-# Legal Impact
-
-# Financial Impact
-
-# Customs Impact
-
-# Trade Impact
-
-# Compliance Risks
-
-# Recommended Actions
-
-Use only document evidence.
-Do not invent information.
-"""
-
-    analysis = generate_response(
-        "You are a senior regulatory intelligence analyst.",
-        prompt
+    synthesis = (
+        SynthesisAgent()
     )
-    return analysis
+
+    combined = (
+        synthesis.combine(
+            agent_results
+        )
+    )
+
+    combined = (
+        synthesis.combine(
+            agent_results
+        )
+    )
+
+    return {
+        "analysis":
+            combined["answer"],
+
+        "document_type":
+            document_type,
+
+        "agents":
+            combined[
+                "participating_agents"
+            ],
+
+        "contributors":
+            combined[
+                "contributors"
+            ]
+    }

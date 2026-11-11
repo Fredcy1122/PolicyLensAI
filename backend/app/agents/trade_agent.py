@@ -4,6 +4,9 @@ from app.agents.agent_notes import (
 from app.tools.trade_impact import (
     analyze_trade_impact
 )
+from app.agents.document_review_agent import (
+    DocumentReviewAgent
+)
 
 class TradeAgent:
 
@@ -44,3 +47,16 @@ class TradeAgent:
         return analyze_trade_impact(
             policy_name
         )
+    def review_document(
+        self,
+        content: str
+    ):
+        reviewer = DocumentReviewAgent()
+
+        return {
+            "agent": "Trade Agent",
+            "answer": reviewer.review(
+                content,
+                "trade and supply chain"
+            )
+        }

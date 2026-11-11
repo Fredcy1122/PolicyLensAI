@@ -35,11 +35,9 @@ def compare_documents(
             "could not be retrieved."
         )
 
-    document_a_content =
-        document_a_content[:4000]
+    document_a_content = document_a_content[:4000]
 
-    document_b_content =
-        document_b_content[:4000]
+    document_b_content = document_b_content[:4000]
 
     prompt = f"""
 Compare the two regulatory documents.

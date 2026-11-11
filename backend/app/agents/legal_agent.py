@@ -4,6 +4,9 @@ from app.agents.agent_notes import (
 from app.tools.legal_lookup import (
     lookup_section
 )
+from app.agents.document_review_agent import (
+    DocumentReviewAgent
+)
 import re
 
 class LegalAgent:
@@ -50,3 +53,17 @@ class LegalAgent:
         return lookup_section(
             section_number
         )
+
+    def review_document(
+        self,
+        content: str
+    ):
+        reviewer = DocumentReviewAgent()
+
+        return {
+            "agent": "Legal Agent",
+            "answer": reviewer.review(
+                content,
+                "legal compliance"
+            )
+        }

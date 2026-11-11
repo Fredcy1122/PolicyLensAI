@@ -8,6 +8,9 @@ from app.tools.tax_calculator import (
     calculate_import_cost
 )
 
+from app.agents.document_review_agent import (
+    DocumentReviewAgent
+)
 
 class FinanceAgent:
 
@@ -52,18 +55,18 @@ class FinanceAgent:
                         "Tax Calculator",
                     "answer":
                         f"""
-Customs Value:
-₦{customs_value:,.2f}
+                    Customs Value:
+                    ₦{customs_value:,.2f}
 
-Duty:
-₦{result['duty']:,.2f}
+                    Duty:
+                    ₦{result['duty']:,.2f}
 
-VAT:
-₦{result['vat']:,.2f}
+                    VAT:
+                    ₦{result['vat']:,.2f}
 
-Total Landed Cost:
-₦{result['total']:,.2f}
-"""
+                    Total Landed Cost:
+                    ₦{result['total']:,.2f}
+                    """
                 }
 
         return {
@@ -71,4 +74,17 @@ Total Landed Cost:
                 "Finance Agent",
             "focus":
                 AgentNotes.finance()
+        }
+    def review_document(
+        self,
+        content: str
+    ):
+        reviewer = DocumentReviewAgent()
+
+        return {
+            "agent": "Finance Agent",
+            "answer": reviewer.review(
+                content,
+                "financial and tax"
+            )
         }

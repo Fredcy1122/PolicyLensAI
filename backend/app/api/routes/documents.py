@@ -64,10 +64,7 @@ def analyze(
             )
         )
 
-        return {
-            "analysis":
-                analysis
-        }
+        return analysis
 
     except Exception as e:
 
