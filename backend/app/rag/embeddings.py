@@ -1,9 +1,26 @@
-from sentence_transformers import SentenceTransformer
+from openai import AzureOpenAI
 
-model = SentenceTransformer(
-    "all-MiniLM-L6-v2"
+from app.core.config import (
+    settings
+)
+
+client = AzureOpenAI(
+    api_key=settings.AZURE_OPENAI_API_KEY,
+    api_version=settings.AZURE_OPENAI_API_VERSION,
+    azure_endpoint=settings.AZURE_OPENAI_ENDPOINT
 )
 
 
-def generate_embedding(text: str):
-    return model.encode(text).tolist()
+def generate_embedding(
+    text: str
+):
+
+    response = client.embeddings.create(
+        model=settings.AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
+        input=text
+    )
+
+    return (
+        response.data[0]
+        .embedding
+    )

@@ -1,4 +1,7 @@
 import chromadb
+from app.rag.embeddings import (
+    generate_embedding
+)
 
 _collection = None
 
@@ -22,6 +25,17 @@ def add_chunks(chunks):
     ids = []
     documents = []
     metadatas = []
+
+    embeddings = [
+        generate_embedding(doc)
+        for doc in documents
+    ]
+    get_collection().add(
+        ids=ids,
+        documents=documents,
+        embeddings=embeddings,
+        metadatas=metadatas
+    )
 
     for chunk in chunks:
 
@@ -50,4 +64,14 @@ def add_chunks(chunks):
         ids=ids,
         documents=documents,
         metadatas=metadatas
+    )
+def delete_document_chunks(
+    document_id: str
+):
+
+    get_collection().delete(
+        where={
+            "document_id":
+                document_id
+        }
     )

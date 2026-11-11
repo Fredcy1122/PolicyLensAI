@@ -23,7 +23,10 @@ from app.rag.vector_store import (
 
 import os
 from sqlalchemy.orm import Session
-
+from app.rag.vector_store import (
+    add_chunks,
+    delete_document_chunks
+)
 from app.db.dependencies import get_db
 from app.repositories.document_repository import (
     DocumentRepository
@@ -127,7 +130,9 @@ async def upload_document(
         title=title,
         pages=ingestion_result["pages"]
     )
-
+    delete_document_chunks(
+        document_id
+    )
     add_chunks(chunks)
 
     document = repo.create(

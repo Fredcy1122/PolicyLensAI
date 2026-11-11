@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_KEY: str
 
     AZURE_OPENAI_DEPLOYMENT: str
+    AZURE_OPENAI_EMBEDDING_DEPLOYMENT: str
 
     AZURE_OPENAI_API_VERSION: str
 
