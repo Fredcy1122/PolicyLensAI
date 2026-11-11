@@ -1,7 +1,9 @@
 from app.rag.vector_store import (
     get_collection
 )
-
+from app.rag.embeddings import (
+    generate_embedding
+)
 
 def retrieve(
     query,
