@@ -5,6 +5,7 @@ from app.rag.embeddings import (
     generate_embedding
 )
 
+
 def retrieve(
     query,
     top_k=3

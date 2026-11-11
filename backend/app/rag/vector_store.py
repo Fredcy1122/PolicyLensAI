@@ -3,6 +3,7 @@ from app.rag.embeddings import (
     generate_embedding
 )
 
+
 _collection = None
 
 
