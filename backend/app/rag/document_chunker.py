@@ -1,5 +1,6 @@
 from app.rag.chunker import chunk_text
 
+MAX_CHUNKS = 500
 
 def chunk_document(
     document_id,
@@ -17,6 +18,10 @@ def chunk_document(
         )
 
         for chunk in page_chunks:
+
+            if len(chunks) >= MAX_CHUNKS:
+                break
+
 
             chunks.append(
                 {
@@ -36,6 +41,8 @@ def chunk_document(
                         chunk
                 }
             )
+        if len(chunks) >= MAX_CHUNKS:
+            break
 
             chunk_number += 1
 

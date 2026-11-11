@@ -19,21 +19,35 @@ def get_collection():
 
 def add_chunks(chunks):
 
+    ids = []
+    documents = []
+    metadatas = []
+
     for chunk in chunks:
 
-        get_collection().add(
-            ids=[chunk["chunk_id"]],
-            documents=[chunk["text"]],
-            metadatas=[
-                {
-                    "document_id":
-                        chunk["document_id"],
-
-                    "page":
-                        chunk["page"],
-
-                    "title":
-                        chunk["title"]
-                }
-            ]
+        ids.append(
+            chunk["chunk_id"]
         )
+
+        documents.append(
+            chunk["text"]
+        )
+
+        metadatas.append(
+            {
+                "document_id":
+                    chunk["document_id"],
+
+                "page":
+                    chunk["page"],
+
+                "title":
+                    chunk["title"]
+            }
+        )
+
+    get_collection().add(
+        ids=ids,
+        documents=documents,
+        metadatas=metadatas
+    )
