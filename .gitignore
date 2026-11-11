@@ -33,3 +33,23 @@ chroma/
 .DS_Store
 .vscode/
 .idea/
+# Python
+__pycache__/
+*.pyc
+
+# Chroma
+backend/chroma_db/
+
+# Uploaded files
+backend/uploads/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Environment
+.env
+backend/.env
+
+# Logs
+*.log
