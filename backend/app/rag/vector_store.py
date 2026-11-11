@@ -21,7 +21,7 @@ def add_chunks(chunks):
 
     for chunk in chunks:
 
-        collection.add(
+        get_collection().add(
             ids=[chunk["chunk_id"]],
             documents=[chunk["text"]],
             metadatas=[

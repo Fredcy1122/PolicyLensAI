@@ -7,7 +7,7 @@ from app.services.llm_service import (
 from app.services.validation_service import (
     validate_evidence
 )
-
+import time
 
 def calculate_confidence(
     retrieval
@@ -46,7 +46,7 @@ Rules:
 
 
 def answer_question(question):
-
+    start = time.time()
     retrieval = retrieve(
         question,
         top_k=3
@@ -65,7 +65,9 @@ def answer_question(question):
 
     documents = retrieval["documents"][0]
     metadata = retrieval["metadatas"][0]
-
+    print(
+        f"Retrieval: {time.time()-start:.2f}s"
+    )
     confidence = calculate_confidence(
         retrieval
     )
@@ -137,12 +139,15 @@ List source documents and page references.
 Use only the evidence provided.
 Do not invent information.
 """
-
+    llm_start = time.time()
     answer = generate_response(
         SYSTEM_PROMPT,
         prompt
     )
 
+    print(
+        f"LLM: {time.time()-llm_start:.2f}s"
+    )
     citations = []
 
     for meta in metadata:
@@ -155,6 +160,11 @@ Do not invent information.
                 "page":
                     meta.get("page")
             }
+        )
+        total_time = time.time() - start
+
+        print(
+            f"Total Request: {total_time:.2f}s"
         )
 
     return {
