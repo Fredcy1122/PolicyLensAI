@@ -16,21 +16,13 @@ from app.services.document_analysis_service import (
 from app.rag.document_chunker import (
     chunk_document
 )
-
 from app.rag.vector_store import (
-    add_chunks
+    replace_document_chunks
 )
 
 import os
 from sqlalchemy.orm import Session
-from app.rag.vector_store import (
-    add_chunks,
-    delete_document_chunks
-)
 from app.db.dependencies import get_db
-from app.repositories.document_repository import (
-    DocumentRepository
-)
 
 router = APIRouter()
 
@@ -53,6 +45,7 @@ def get_documents(
         for doc in documents
     ]
 
+
 @router.get(
     "/documents/analyze/{document_id}"
 )
@@ -60,23 +53,17 @@ def analyze(
     document_id: str
 ):
     try:
-
-        analysis = (
-            analyze_document(
-                document_id
-            )
-        )
-
+        analysis = analyze_document(document_id)
         return analysis
 
     except Exception as e:
-
         return {
             "analysis":
                 "Document analysis is temporarily unavailable due to Azure OpenAI rate limits. Please try again later.",
             "error":
                 str(e)
         }
+
 
 @router.post("/documents/upload")
 async def upload_document(
@@ -99,22 +86,13 @@ async def upload_document(
         file_path,
         "wb"
     ) as buffer:
-
         buffer.write(
             await file.read()
         )
 
-    ingestion_result = (
-        ingest_document(
-            file_path
-        )
-    )
+    ingestion_result = ingest_document(file_path)
 
-    metadata = (
-        ingestion_result[
-            "metadata"
-        ]
-    )
+    metadata = ingestion_result["metadata"]
     document_id = metadata.get(
         "document_id",
         file.filename
@@ -130,10 +108,10 @@ async def upload_document(
         title=title,
         pages=ingestion_result["pages"]
     )
-    delete_document_chunks(
-        document_id
-    )
-    add_chunks(chunks)
+
+    # Generate and store the replacement chunks before pruning old vectors.
+    # If embedding generation fails, the existing document index is preserved.
+    replace_document_chunks(chunks)
 
     document = repo.create(
         db,
