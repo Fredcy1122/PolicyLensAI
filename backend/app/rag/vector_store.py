@@ -26,26 +26,26 @@ def add_chunks(chunks):
     ids = []
     documents = []
     metadatas = []
-
-    embeddings = [
-        generate_embedding(doc)
-        for doc in documents
-    ]
-    get_collection().add(
-        ids=ids,
-        documents=documents,
-        embeddings=embeddings,
-        metadatas=metadatas
-    )
+    embeddings = []
 
     for chunk in chunks:
+
+        text = (
+            chunk.get(
+                "text",
+                ""
+            ).strip()
+        )
+
+        if not text:
+            continue
 
         ids.append(
             chunk["chunk_id"]
         )
 
         documents.append(
-            chunk["text"]
+            text
         )
 
         metadatas.append(
@@ -61,9 +61,21 @@ def add_chunks(chunks):
             }
         )
 
+        embeddings.append(
+            generate_embedding(
+                text
+            )
+        )
+
+    if not documents:
+        raise ValueError(
+            "No valid chunks were generated."
+        )
+
     get_collection().add(
         ids=ids,
         documents=documents,
+        embeddings=embeddings,
         metadatas=metadatas
     )
 def delete_document_chunks(
