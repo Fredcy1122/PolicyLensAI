@@ -1,7 +1,6 @@
 import chromadb
-from app.rag.embeddings import (
-    generate_embedding
-)
+
+from app.rag.embeddings import generate_embeddings
 
 
 _collection = None
@@ -11,80 +10,63 @@ def get_collection():
     global _collection
 
     if _collection is None:
-        client = chromadb.PersistentClient(
-            path="./chroma_db"
-        )
-
+        client = chromadb.PersistentClient(path="./chroma_db")
         _collection = client.get_or_create_collection(
             name="policy_documents"
         )
 
     return _collection
 
-def add_chunks(chunks):
 
+def add_chunks(chunks):
     ids = []
     documents = []
     metadatas = []
-    embeddings = []
+    seen_ids = set()
 
     for chunk in chunks:
-
-        text = (
-            chunk.get(
-                "text",
-                ""
-            ).strip()
-        )
-
+        text = chunk.get("text", "").strip()
         if not text:
             continue
 
-        ids.append(
-            chunk["chunk_id"]
-        )
+        chunk_id = str(chunk["chunk_id"])
+        if chunk_id in seen_ids:
+            raise ValueError(
+                f"Duplicate chunk ID generated before vector storage: {chunk_id}"
+            )
+        seen_ids.add(chunk_id)
 
-        documents.append(
-            text
-        )
-
+        ids.append(chunk_id)
+        documents.append(text)
         metadatas.append(
             {
-                "document_id":
-                    chunk["document_id"],
-
-                "page":
-                    chunk["page"],
-
-                "title":
-                    chunk["title"]
+                "document_id": str(chunk["document_id"]),
+                "page": int(chunk["page"]),
+                "title": str(chunk["title"])
             }
         )
 
-        embeddings.append(
-            generate_embedding(
-                text
-            )
-        )
-
     if not documents:
-        raise ValueError(
-            "No valid chunks were generated."
+        raise ValueError("No valid chunks were generated.")
+
+    # One Azure request per batch rather than one request per chunk.
+    embeddings = generate_embeddings(documents)
+
+    if len(embeddings) != len(documents):
+        raise RuntimeError(
+            "Embedding count does not match the number of document chunks."
         )
 
-    get_collection().add(
+    # Upsert makes retries/re-uploads idempotent for the same chunk IDs.
+    get_collection().upsert(
         ids=ids,
         documents=documents,
         embeddings=embeddings,
         metadatas=metadatas
     )
-def delete_document_chunks(
-    document_id: str
-):
 
+
+def delete_document_chunks(document_id: str):
     get_collection().delete(
-        where={
-            "document_id":
-                document_id
-        }
+        where={"document_id": str(document_id)}
     )
