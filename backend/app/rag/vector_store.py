@@ -18,7 +18,7 @@ def get_collection():
     return _collection
 
 
-def add_chunks(chunks):
+def _prepare_chunks(chunks):
     ids = []
     documents = []
     metadatas = []
@@ -49,7 +49,11 @@ def add_chunks(chunks):
     if not documents:
         raise ValueError("No valid chunks were generated.")
 
-    # One Azure request per batch rather than one request per chunk.
+    return ids, documents, metadatas
+
+
+def _upsert_chunks(ids, documents, metadatas):
+    # Generate all embeddings before changing the existing vector records.
     embeddings = generate_embeddings(documents)
 
     if len(embeddings) != len(documents):
@@ -57,13 +61,52 @@ def add_chunks(chunks):
             "Embedding count does not match the number of document chunks."
         )
 
-    # Upsert makes retries/re-uploads idempotent for the same chunk IDs.
     get_collection().upsert(
         ids=ids,
         documents=documents,
         embeddings=embeddings,
         metadatas=metadatas
     )
+
+
+def add_chunks(chunks):
+    """Add or update chunks without removing other chunks for the document."""
+    ids, documents, metadatas = _prepare_chunks(chunks)
+    _upsert_chunks(ids, documents, metadatas)
+
+
+def replace_document_chunks(chunks):
+    """
+    Replace a document's indexed chunks safely.
+
+    New embeddings are generated and upserted before obsolete chunks are
+    deleted. If embedding generation fails, the previous index is untouched.
+    """
+    ids, documents, metadatas = _prepare_chunks(chunks)
+
+    document_ids = {metadata["document_id"] for metadata in metadatas}
+    if len(document_ids) != 1:
+        raise ValueError(
+            "replace_document_chunks expects chunks from exactly one document."
+        )
+
+    document_id = next(iter(document_ids))
+
+    # This must complete successfully before any old chunks are removed.
+    _upsert_chunks(ids, documents, metadatas)
+
+    collection = get_collection()
+    existing = collection.get(
+        where={"document_id": document_id}
+    )
+    existing_ids = set(existing.get("ids", []))
+    current_ids = set(ids)
+    obsolete_ids = list(existing_ids - current_ids)
+
+    # Remove leftovers when a replacement document contains fewer chunks.
+    # If cleanup fails, the new chunks remain available and a retry can clean up.
+    if obsolete_ids:
+        collection.delete(ids=obsolete_ids)
 
 
 def delete_document_chunks(document_id: str):
