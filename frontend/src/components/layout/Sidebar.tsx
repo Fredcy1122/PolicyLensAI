@@ -1,80 +1,70 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
-  MessageSquare,
+  MessageSquareText,
   Files,
   Scale,
   FileText,
-  BarChart3,
-  Brain,
+  ChartNoAxesCombined,
+  BrainCircuit,
+  ShieldCheck,
 } from "lucide-react";
 
 const menuItems = [
-  {
-    name: "Dashboard",
-    path: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Assistant",
-    path: "/assistant",
-    icon: MessageSquare,
-  },
-  {
-    name: "Agent Center",
-    path: "/agents",
-    icon: Brain,
-  },
-  {
-    name: "Documents",
-    path: "/documents",
-    icon: Files,
-  },
-  {
-    name: "Compare Policies",
-    path: "/comparison",
-    icon: Scale,
-  },
-  {
-    name: "Summaries",
-    path: "/summary",
-    icon: FileText,
-  },
-  {
-    name: "Evaluation",
-    path: "/evaluation",
-    icon: BarChart3,
-  },
+  { name: "Dashboard", path: "/", icon: LayoutDashboard, end: true },
+  { name: "Assistant", path: "/assistant", icon: MessageSquareText },
+  { name: "Agent Center", path: "/agents", icon: BrainCircuit },
+  { name: "Documents", path: "/documents", icon: Files },
+  { name: "Compare Policies", path: "/comparison", icon: Scale },
+  { name: "Summaries", path: "/summary", icon: FileText },
+  { name: "Evaluation", path: "/evaluation", icon: ChartNoAxesCombined },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  isOpen: boolean;
+  onNavigate: () => void;
+};
+
+export default function Sidebar({ isOpen, onNavigate }: SidebarProps) {
   return (
-    <aside className="sidebar">
-      <div className="logo-section">
-        <h2>🇳🇬 PolicyLenAI</h2>
-        <p>Policy Intelligence</p>
+    <aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
+      <div className="brand">
+        <div className="brand-mark" aria-hidden="true">🇳🇬</div>
+        <div className="brand-copy">
+          <strong>PolicyLensAI</strong>
+          <span>Policy Intelligence</span>
+        </div>
       </div>
 
-      <nav>
+      <div className="nav-caption">WORKSPACE</div>
+      <nav className="sidebar-nav" aria-label="Main navigation">
         {menuItems.map((item) => {
           const Icon = item.icon;
-
           return (
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) =>
-                isActive
-                  ? "nav-link active"
-                  : "nav-link"
-              }
+              end={item.end}
+              onClick={onNavigate}
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             >
-              <Icon size={18} />
+              <Icon size={19} strokeWidth={1.9} />
               <span>{item.name}</span>
             </NavLink>
           );
         })}
       </nav>
+
+      <div className="sidebar-bottom">
+        <div className="sidebar-security">
+          <ShieldCheck size={19} />
+          <div>
+            <strong>Policy workspace</strong>
+            <span>Regulatory intelligence</span>
+          </div>
+        </div>
+        <span className="sidebar-version">NIGERIA · POLICY INTELLIGENCE</span>
+      </div>
     </aside>
   );
 }
