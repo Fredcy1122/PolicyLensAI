@@ -20,6 +20,9 @@ export default function Summary() {
       setSelectedDocument(documentId);
       generateSummary(documentId);
     } else {
+      setSummary("");
+      setError("");
+      setLoading(false);
       getDocuments()
         .then((data) => setDocuments(Array.isArray(data) ? data : []))
         .catch((err) => {
