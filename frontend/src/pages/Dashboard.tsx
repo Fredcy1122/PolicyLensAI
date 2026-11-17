@@ -5,7 +5,7 @@ import {
   BarChart3,
   FileText,
   Files,
-  MessageSquareText,
+  MessageSquare,
   Scale,
   Sparkles,
   UploadCloud,
@@ -49,13 +49,13 @@ export default function Dashboard() {
   const metrics = [
     { label: "Documents", value: stats?.documents ?? "—", icon: Files, tone: "green", note: "In your library" },
     { label: "Indexed chunks", value: stats?.chunks ?? "—", icon: FileText, tone: "blue", note: "Available for retrieval" },
-    { label: "Questions", value: stats?.queries ?? "—", icon: MessageSquareText, tone: "purple", note: "Questions processed" },
+    { label: "Questions", value: stats?.queries ?? "—", icon: MessageSquare, tone: "purple", note: "Questions processed" },
     { label: "Accuracy", value: stats ? `${stats.accuracy}%` : "—", icon: BarChart3, tone: "amber", note: "Reported system metric" },
   ];
 
   const actions = [
     { title: "Upload a document", description: "Add a policy or regulation to your library", icon: UploadCloud, action: () => navigate("/documents"), primary: true },
-    { title: "Ask a question", description: "Get answers grounded in your documents", icon: MessageSquareText, action: () => navigate("/assistant") },
+    { title: "Ask a question", description: "Get answers grounded in your documents", icon: MessageSquare, action: () => navigate("/assistant") },
     { title: "Compare policies", description: "Identify differences between two documents", icon: Scale, action: () => navigate("/comparison") },
     { title: "Generate a summary", description: "Review an existing document in brief", icon: Sparkles, action: () => navigate("/summary") },
   ];
