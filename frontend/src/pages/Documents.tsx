@@ -30,6 +30,10 @@ export default function Documents() {
     loadDocuments();
   }, []);
 
+  useEffect(() => {
+    setSearchTerm(searchParams.get("search") ?? "");
+  }, [searchParams]);
+
   const handleUpload = async () => {
     if (!selectedFile || uploading) return;
     if (!selectedFile.name.toLowerCase().endsWith(".pdf")) {
