@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, BrainCircuit, FileSearch, Scale, Ship, Wallet, Globe2, BookOpen, Workflow } from "lucide-react";
+import { ArrowRight, Brain, FileText, Scale, Ship, Wallet, Globe2, BookOpen, Workflow } from "lucide-react";
 import { getAgentMetrics } from "../services/agentService";
 import type { AgentMetrics } from "../types/agentMetrics";
 
@@ -72,11 +72,11 @@ export default function AgentCenter() {
       <section className="section-block">
         <div className="section-heading"><div><span className="section-kicker">HOW IT WORKS</span><h2>Question routing flow</h2></div></div>
         <div className="content-card routing-flow">
-          <div className="routing-step"><span>01</span><BrainCircuit size={20} /><strong>User question</strong><small>Policy query submitted</small></div>
+          <div className="routing-step"><span>01</span><Brain size={20} /><strong>User question</strong><small>Policy query submitted</small></div>
           <ArrowRight className="routing-arrow" size={18} />
           <div className="routing-step"><span>02</span><Workflow size={20} /><strong>Router agent</strong><small>Identifies relevant expertise</small></div>
           <ArrowRight className="routing-arrow" size={18} />
-          <div className="routing-step"><span>03</span><FileSearch size={20} /><strong>Specialist agents</strong><small>Retrieve and analyse context</small></div>
+          <div className="routing-step"><span>03</span><FileText size={20} /><strong>Specialist agents</strong><small>Retrieve and analyse context</small></div>
           <ArrowRight className="routing-arrow" size={18} />
           <div className="routing-step"><span>04</span><BookOpen size={20} /><strong>Final answer</strong><small>Reasoned response with sources</small></div>
         </div>
