@@ -1,23 +1,23 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
-  MessageSquareText,
+  MessageSquare,
   Files,
   Scale,
   FileText,
   BarChart3,
-  BrainCircuit,
+  Brain,
   ShieldCheck,
 } from "lucide-react";
 
 const menuItems = [
   { name: "Dashboard", path: "/", icon: LayoutDashboard, end: true },
-  { name: "Assistant", path: "/assistant", icon: MessageSquareText },
-  { name: "Agent Center", path: "/agents", icon: BrainCircuit },
+  { name: "Assistant", path: "/assistant", icon: MessageSquare },
+  { name: "Agent Center", path: "/agents", icon: Brain },
   { name: "Documents", path: "/documents", icon: Files },
   { name: "Compare Policies", path: "/comparison", icon: Scale },
   { name: "Summaries", path: "/summary", icon: FileText },
-  { name: "Evaluation", path: "/evaluation", icon: ChartNoAxesCombined },
+  { name: "Evaluation", path: "/evaluation", icon: BarChart3 },
 ];
 
 type SidebarProps = {
