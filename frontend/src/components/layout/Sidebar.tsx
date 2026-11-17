@@ -5,7 +5,7 @@ import {
   Files,
   Scale,
   FileText,
-  ChartNoAxesCombined,
+  BarChart3,
   BrainCircuit,
   ShieldCheck,
 } from "lucide-react";
